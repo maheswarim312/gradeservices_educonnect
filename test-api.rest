@@ -1,0 +1,238 @@
+### REST Client Testing File
+### Install REST Client extension in VS Code to use this file
+### atau gunakan Postman/Thunder Client
+
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+
+### 1. Check Server Status
+GET http://localhost:3000
+
+###
+
+### 2. Get All Grades
+GET {{baseUrl}}/grades
+
+###
+
+### 3. Get All Grades with Filter - by Student
+GET {{baseUrl}}/grades?studentID=1
+
+###
+
+### 4. Get All Grades with Filter - by Course
+GET {{baseUrl}}/grades?courseID=2
+
+###
+
+### 5. Get All Grades with Filter - by Teacher
+GET {{baseUrl}}/grades?teacherID=3
+
+###
+
+### 6. Get All Grades with Multiple Filters
+GET {{baseUrl}}/grades?studentID=1&courseID=2
+
+###
+
+### 7. Get Grade by ID
+GET {{baseUrl}}/grades/1
+
+###
+
+### 8. Get Grades by Student ID
+GET {{baseUrl}}/grades/student/1
+
+###
+
+### 9. Get Grades by Course ID
+GET {{baseUrl}}/grades/course/2
+
+###
+
+### 10. Get Grades by Teacher ID
+GET {{baseUrl}}/grades/teacher/3
+
+###
+
+### 11. Create New Grade - Full Data
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 1,
+  "courseID": 2,
+  "teacherID": 3,
+  "grade": "A",
+  "remarks": "Excellent work, keep it up!"
+}
+
+###
+
+### 12. Create New Grade - Without Remarks
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 2,
+  "courseID": 3,
+  "teacherID": 1,
+  "grade": "B+"
+}
+
+###
+
+### 13. Create New Grade - Test Validation Error (Missing Fields)
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 1,
+  "grade": "A"
+}
+
+###
+
+### 14. Update Grade
+PUT {{baseUrl}}/grades/1
+Content-Type: {{contentType}}
+
+{
+  "studentID": 1,
+  "courseID": 2,
+  "teacherID": 3,
+  "grade": "A+",
+  "remarks": "Outstanding performance, excellent improvement!"
+}
+
+###
+
+### 15. Update Grade - Change Grade Only
+PUT {{baseUrl}}/grades/1
+Content-Type: {{contentType}}
+
+{
+  "studentID": 1,
+  "courseID": 2,
+  "teacherID": 3,
+  "grade": "A-",
+  "remarks": "Good work"
+}
+
+###
+
+### 16. Update Grade - Test Not Found Error
+PUT {{baseUrl}}/grades/999
+Content-Type: {{contentType}}
+
+{
+  "studentID": 1,
+  "courseID": 2,
+  "teacherID": 3,
+  "grade": "A",
+  "remarks": "Test"
+}
+
+###
+
+### 17. Delete Grade
+DELETE {{baseUrl}}/grades/1
+
+###
+
+### 18. Delete Grade - Test Not Found Error
+DELETE {{baseUrl}}/grades/999
+
+###
+
+### === WITH AUTHENTICATION (UNCOMMENT WHEN READY) ===
+
+### 19. Get All Grades with Token
+# GET {{baseUrl}}/grades
+# Authorization: Bearer YOUR_TOKEN_HERE
+
+###
+
+### 20. Create Grade with Token
+# POST {{baseUrl}}/grades
+# Content-Type: {{contentType}}
+# Authorization: Bearer YOUR_TOKEN_HERE
+
+# {
+#   "studentID": 1,
+#   "courseID": 2,
+#   "teacherID": 3,
+#   "grade": "A",
+#   "remarks": "Great job!"
+# }
+
+###
+
+### === SAMPLE TEST DATA ===
+
+### Create Multiple Grades for Testing
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 1,
+  "courseID": 1,
+  "teacherID": 1,
+  "grade": "A",
+  "remarks": "Matematika - Sangat baik"
+}
+
+###
+
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 1,
+  "courseID": 2,
+  "teacherID": 2,
+  "grade": "B+",
+  "remarks": "Fisika - Baik, perlu sedikit peningkatan"
+}
+
+###
+
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 2,
+  "courseID": 1,
+  "teacherID": 1,
+  "grade": "B",
+  "remarks": "Matematika - Cukup baik"
+}
+
+###
+
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 2,
+  "courseID": 3,
+  "teacherID": 3,
+  "grade": "A-",
+  "remarks": "Kimia - Bagus sekali"
+}
+
+###
+
+POST {{baseUrl}}/grades
+Content-Type: {{contentType}}
+
+{
+  "studentID": 3,
+  "courseID": 1,
+  "teacherID": 1,
+  "grade": "C+",
+  "remarks": "Matematika - Perlu lebih banyak latihan"
+}
+
+###
+

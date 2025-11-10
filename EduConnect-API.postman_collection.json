@@ -1,0 +1,320 @@
+{
+  "info": {
+    "name": "EduConnect API - Grading System",
+    "description": "API collection for EduConnect grading system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Server Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000"
+        }
+      }
+    },
+    {
+      "name": "Grades",
+      "item": [
+        {
+          "name": "Get All Grades",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"]
+            }
+          }
+        },
+        {
+          "name": "Get All Grades (Filter by Student)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades?studentID=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"],
+              "query": [
+                {
+                  "key": "studentID",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Grades (Filter by Course)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades?courseID=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"],
+              "query": [
+                {
+                  "key": "courseID",
+                  "value": "2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Grades (Multiple Filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades?studentID=1&courseID=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"],
+              "query": [
+                {
+                  "key": "studentID",
+                  "value": "1"
+                },
+                {
+                  "key": "courseID",
+                  "value": "2"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Grade by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Grades by Student ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades/student/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "student", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Grades by Course ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades/course/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "course", "2"]
+            }
+          }
+        },
+        {
+          "name": "Get Grades by Teacher ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades/teacher/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "teacher", "3"]
+            }
+          }
+        },
+        {
+          "name": "Create Grade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentID\": 1,\n  \"courseID\": 2,\n  \"teacherID\": 3,\n  \"grade\": \"A\",\n  \"remarks\": \"Excellent work\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/grades",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"]
+            }
+          }
+        },
+        {
+          "name": "Create Grade (Without Remarks)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentID\": 2,\n  \"courseID\": 3,\n  \"teacherID\": 1,\n  \"grade\": \"B+\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/grades",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"]
+            }
+          }
+        },
+        {
+          "name": "Update Grade",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentID\": 1,\n  \"courseID\": 2,\n  \"teacherID\": 3,\n  \"grade\": \"A+\",\n  \"remarks\": \"Outstanding performance\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/grades/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Grade",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Cases",
+      "item": [
+        {
+          "name": "Create Multiple Test Grades",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentID\": 1,\n  \"courseID\": 1,\n  \"teacherID\": 1,\n  \"grade\": \"A\",\n  \"remarks\": \"Matematika - Sangat baik\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/grades",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"]
+            }
+          }
+        },
+        {
+          "name": "Test Validation Error (Missing Fields)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentID\": 1,\n  \"grade\": \"A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/grades",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades"]
+            }
+          }
+        },
+        {
+          "name": "Test Not Found (Get)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "999"]
+            }
+          }
+        },
+        {
+          "name": "Test Not Found (Update)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentID\": 1,\n  \"courseID\": 2,\n  \"teacherID\": 3,\n  \"grade\": \"A\",\n  \"remarks\": \"Test\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/grades/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "999"]
+            }
+          }
+        },
+        {
+          "name": "Test Not Found (Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/grades/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["grades", "999"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
