@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const gradeController = require('../controllers/gradeController');
-const { verifyToken, checkRole } = require('../middlewares/authMiddleware');
+const { checkAuth, isTeacherOrAdmin, isMurid, isAdmin } = require('../middlewares/authMiddleware');
 
 // Public routes (untuk testing tanpa auth)
 // Nanti uncomment verifyToken ketika sudah integrasi dengan login
@@ -55,10 +55,7 @@ const { verifyToken, checkRole } = require('../middlewares/authMiddleware');
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  gradeController.getAllGrades
-);
+router.get('/', checkAuth, gradeController.getAllGrades);
 
 /**
  * @swagger
@@ -92,10 +89,7 @@ router.get('/',
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/:id', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  gradeController.getGradeById
-);
+router.get('/:id', checkAuth, gradeController.getGradeById);
 
 /**
  * @swagger
@@ -132,10 +126,7 @@ router.get('/:id',
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/student/:studentId', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  gradeController.getGradesByStudent
-);
+router.get('/student/:studentId', checkAuth, gradeController.getGradesByStudent);
 
 /**
  * @swagger
@@ -172,10 +163,7 @@ router.get('/student/:studentId',
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/course/:courseId', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  gradeController.getGradesByCourse
-);
+router.get('/course/:courseId', checkAuth, gradeController.getGradesByCourse);
 
 /**
  * @swagger
@@ -212,10 +200,7 @@ router.get('/course/:courseId',
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/teacher/:teacherId', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  gradeController.getGradesByTeacher
-);
+router.get('/teacher/:teacherId', checkAuth, gradeController.getGradesByTeacher);
 
 /**
  * @swagger
@@ -255,11 +240,7 @@ router.get('/teacher/:teacherId',
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.post('/', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  // checkRole('teacher', 'admin'), // UNCOMMENT ini untuk role-based access
-  gradeController.createGrade
-);
+router.post('/', checkAuth, isTeacherOrAdmin, gradeController.createGrade);
 
 /**
  * @swagger
@@ -308,11 +289,7 @@ router.post('/',
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.put('/:id', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  // checkRole('teacher', 'admin'), // UNCOMMENT ini untuk role-based access
-  gradeController.updateGrade
-);
+router.put('/:id', checkAuth, isTeacherOrAdmin, gradeController.updateGrade);
 
 /**
  * @swagger
@@ -351,11 +328,7 @@ router.put('/:id',
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.delete('/:id', 
-  // verifyToken, // UNCOMMENT ini ketika sudah integrasi
-  // checkRole('admin'), // UNCOMMENT ini untuk role-based access
-  gradeController.deleteGrade
-);
+router.delete('/:id', checkAuth, isAdmin, gradeController.deleteGrade);
 
 module.exports = router;
 

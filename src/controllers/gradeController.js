@@ -4,6 +4,8 @@ class GradeController {
   // Get all grades
   async getAllGrades(req, res) {
     try {
+      const { id: requesterId, role: requesterRole } = req.user;
+
       // Extract query parameters for filtering
       const filters = {
         studentID: req.query.studentID,
@@ -11,6 +13,10 @@ class GradeController {
         teacherID: req.query.teacherID,
         grade: req.query.grade
       };
+
+      if (requesterRole === 'murid') {
+          filters.studentID = requesterId;
+      }
 
       // If any filter is provided, use filtered query
       const hasFilters = Object.values(filters).some(value => value !== undefined);
@@ -62,7 +68,13 @@ class GradeController {
   // Get grades by student ID
   async getGradesByStudent(req, res) {
     try {
+      const { id: requesterId, role: requesterRole } = req.user;
       const { studentId } = req.params;
+
+      if (requesterRole === 'murid' && requesterId != studentId) {
+        return res.status(403).json({ success: false, message: "Akses ditolak: Murid hanya bisa melihat nilainya sendiri." });
+      }
+
       const grades = await Grade.findByStudentId(studentId);
 
       res.json({

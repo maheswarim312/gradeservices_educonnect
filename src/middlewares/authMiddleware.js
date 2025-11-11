@@ -1,67 +1,64 @@
-const jwt = require('jsonwebtoken');
+const axios = require('axios');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// Middleware untuk verifikasi JWT token
-const verifyToken = (req, res, next) => {
-  // UNCOMMENT BLOCK INI KETIKA SUDAH INTEGRASI DENGAN LOGIN
-  /*
+const AUTH_SERVICE_URL = process.env.USER_SERVICE_URL; 
+
+const checkAuth = async (req, res, next) => {
   try {
-    // Get token from header
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: "Akses ditolak: Token tidak ada." });
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Access denied. No token provided.'
-      });
-    }
-
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(403).json({
-      success: false,
-      message: 'Invalid or expired token',
-      error: error.message
+    // 3. Telepon API-mu!
+    const authResponse = await axios.get(`${AUTH_SERVICE_URL}/api/auth/me`, {
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
     });
-  }
-  */
 
-  // TEMPORARY: Skip authentication for now
-  next();
+    if (authResponse.status === 200) {
+      req.user = authResponse.data;
+      next();
+    } else {
+      res.status(401).json({ message: "Token tidak valid." });
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+         return res.status(401).json({ message: "Token tidak valid atau kadaluwarsa." });
+    }
+    console.error("Auth Middleware Error:", error.message);
+    res.status(500).json({ message: "Gagal menghubungi service otentikasi." });
+  }
 };
 
-// Middleware untuk verifikasi role (opsional)
-const checkRole = (...allowedRoles) => {
-  return (req, res, next) => {
-    // UNCOMMENT BLOCK INI KETIKA SUDAH INTEGRASI DENGAN LOGIN
-    /*
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Authentication required'
-      });
-    }
+const isTeacherOrAdmin = (req, res, next) => {
+  if (req.user && (req.user.role === 'admin' || req.user.role === 'pengajar')) {
+    next(); // Lolos, dia admin ATAU pengajar
+  } else {
+    res.status(403).json({ message: "Akses ditolak: Hanya untuk Admin atau Pengajar." });
+  }
+};
 
-    if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. Insufficient permissions.'
-      });
-    }
-
+const isMurid = (req, res, next) => {
+  if (req.user && req.user.role === 'murid') {
     next();
-    */
+  } else {
+    res.status(403).json({ message: "Akses ditolak: Hanya untuk Murid." });
+  }
+};
 
-    // TEMPORARY: Skip role checking for now
+export const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
     next();
-  };
+  } else {
+    res.status(403).json({ message: "Akses ditolak: Hanya untuk Admin." });
+  }
 };
 
 module.exports = {
-  verifyToken,
-  checkRole
+  checkAuth,
+  isTeacherOrAdmin,
+  isMurid,
+  isAdmin,
 };
-
