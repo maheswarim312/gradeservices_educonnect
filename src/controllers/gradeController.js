@@ -1,4 +1,4 @@
-const Grade = require('../models/gradeModel');
+const Grade = require("../models/gradeModel");
 
 class GradeController {
   // Get all grades
@@ -11,30 +11,33 @@ class GradeController {
         studentID: req.query.studentID,
         courseID: req.query.courseID,
         teacherID: req.query.teacherID,
-        grade: req.query.grade
+        grade: req.query.grade,
       };
 
-      if (requesterRole === 'murid') {
-          filters.studentID = requesterId;
+      if (requesterRole === "murid") {
+        filters.studentID = requesterId;
       }
 
       // If any filter is provided, use filtered query
-      const hasFilters = Object.values(filters).some(value => value !== undefined);
-      
-      const grades = hasFilters 
+      const hasFilters = Object.values(filters).some(
+        (value) => value !== undefined
+      );
+
+      const grades = hasFilters
         ? await Grade.findWithFilters(filters)
         : await Grade.findAll();
 
       res.json({
-        success: true,
+        status: "success",
+        message: "Grades retrieved successfully",
         count: grades.length,
-        data: grades
+        data: grades,
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error fetching grades',
-        error: error.message
+        status: "error",
+        message: "Error fetching grades",
+        error: error.message,
       });
     }
   }
@@ -49,24 +52,31 @@ class GradeController {
 
       if (!grade) {
         return res.status(404).json({
-          success: false,
-          message: 'Grade not found'
+          status: "error",
+          message: "Grade not found",
         });
       }
 
-      if (requesterRole === 'murid' && grade.studentID !== requesterId) {
-        return res.status(403).json({ success: false, message: "Akses ditolak: Murid hanya bisa melihat nilainya sendiri." });
+      if (requesterRole === "murid" && grade.studentID !== requesterId) {
+        return res
+          .status(403)
+          .json({
+            status: "error",
+            message:
+              "Akses ditolak: Murid hanya bisa melihat nilainya sendiri.",
+          });
       }
 
       res.json({
-        success: true,
-        data: grade
+        status: "success",
+        message: "Grade retrieved successfully",
+        data: grade,
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error fetching grade',
-        error: error.message
+        status: "error",
+        message: "Error fetching grade",
+        error: error.message,
       });
     }
   }
@@ -77,22 +87,29 @@ class GradeController {
       const { id: requesterId, role: requesterRole } = req.user;
       const { studentId } = req.params;
 
-      if (requesterRole === 'murid' && requesterId != studentId) {
-        return res.status(403).json({ success: false, message: "Akses ditolak: Murid hanya bisa melihat nilainya sendiri." });
+      if (requesterRole === "murid" && requesterId != studentId) {
+        return res
+          .status(403)
+          .json({
+            status: "error",
+            message:
+              "Akses ditolak: Murid hanya bisa melihat nilainya sendiri.",
+          });
       }
 
       const grades = await Grade.findByStudentId(studentId);
 
       res.json({
-        success: true,
+        status: "success",
+        message: "Grades retrieved successfully",
         count: grades.length,
-        data: grades
+        data: grades,
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error fetching student grades',
-        error: error.message
+        status: "error",
+        message: "Error fetching student grades",
+        error: error.message,
       });
     }
   }
@@ -104,15 +121,16 @@ class GradeController {
       const grades = await Grade.findByCourseId(courseId);
 
       res.json({
-        success: true,
+        status: "success",
+        message: "Grades retrieved successfully",
         count: grades.length,
-        data: grades
+        data: grades,
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error fetching course grades',
-        error: error.message
+        status: "error",
+        message: "Error fetching course grades",
+        error: error.message,
       });
     }
   }
@@ -124,15 +142,16 @@ class GradeController {
       const grades = await Grade.findByTeacherId(teacherId);
 
       res.json({
-        success: true,
+        status: "success",
+        message: "Grades retrieved successfully",
         count: grades.length,
-        data: grades
+        data: grades,
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error fetching teacher grades',
-        error: error.message
+        status: "error",
+        message: "Error fetching teacher grades",
+        error: error.message,
       });
     }
   }
@@ -145,8 +164,9 @@ class GradeController {
       // Validation
       if (!studentID || !courseID || !teacherID || !grade) {
         return res.status(400).json({
-          success: false,
-          message: 'Please provide all required fields: studentID, courseID, teacherID, grade'
+          status: "error",
+          message:
+            "Please provide all required fields: studentID, courseID, teacherID, grade",
         });
       }
 
@@ -155,22 +175,22 @@ class GradeController {
         courseID,
         teacherID,
         grade,
-        remarks: remarks || null
+        remarks: remarks || null,
       };
 
       const insertId = await Grade.create(gradeData);
       const newGrade = await Grade.findById(insertId);
 
       res.status(201).json({
-        success: true,
-        message: 'Grade created successfully',
-        data: newGrade
+        status: "success",
+        message: "Grade created successfully",
+        data: newGrade,
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error creating grade',
-        error: error.message
+        status: "error",
+        message: "Error creating grade",
+        error: error.message,
       });
     }
   }
@@ -185,16 +205,17 @@ class GradeController {
       const existingGrade = await Grade.findById(id);
       if (!existingGrade) {
         return res.status(404).json({
-          success: false,
-          message: 'Grade not found'
+          status: "error",
+          message: "Grade not found",
         });
       }
 
       // Validation
       if (!studentID || !courseID || !teacherID || !grade) {
         return res.status(400).json({
-          success: false,
-          message: 'Please provide all required fields: studentID, courseID, teacherID, grade'
+          status: "error",
+          message:
+            "Please provide all required fields: studentID, courseID, teacherID, grade",
         });
       }
 
@@ -203,22 +224,22 @@ class GradeController {
         courseID,
         teacherID,
         grade,
-        remarks: remarks || null
+        remarks: remarks || null,
       };
 
       await Grade.update(id, gradeData);
       const updatedGrade = await Grade.findById(id);
 
       res.json({
-        success: true,
-        message: 'Grade updated successfully',
-        data: updatedGrade
+        status: "success",
+        message: "Grade updated successfully",
+        data: updatedGrade,
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error updating grade',
-        error: error.message
+        status: "error",
+        message: "Error updating grade",
+        error: error.message,
       });
     }
   }
@@ -232,26 +253,25 @@ class GradeController {
       const existingGrade = await Grade.findById(id);
       if (!existingGrade) {
         return res.status(404).json({
-          success: false,
-          message: 'Grade not found'
+          status: "error",
+          message: "Grade not found",
         });
       }
 
       await Grade.delete(id);
 
       res.json({
-        success: true,
-        message: 'Grade deleted successfully'
+        status: "success",
+        message: "Grade deleted successfully",
       });
     } catch (error) {
       res.status(500).json({
-        success: false,
-        message: 'Error deleting grade',
-        error: error.message
+        status: "error",
+        message: "Error deleting grade",
+        error: error.message,
       });
     }
   }
 }
 
 module.exports = new GradeController();
-
