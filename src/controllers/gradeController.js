@@ -42,7 +42,9 @@ class GradeController {
   // Get grade by ID
   async getGradeById(req, res) {
     try {
+      const { id: requesterId, role: requesterRole } = req.user;
       const { id } = req.params;
+
       const grade = await Grade.findById(id);
 
       if (!grade) {
@@ -50,6 +52,10 @@ class GradeController {
           success: false,
           message: 'Grade not found'
         });
+      }
+
+      if (requesterRole === 'murid' && grade.studentID !== requesterId) {
+        return res.status(403).json({ success: false, message: "Akses ditolak: Murid hanya bisa melihat nilainya sendiri." });
       }
 
       res.json({
